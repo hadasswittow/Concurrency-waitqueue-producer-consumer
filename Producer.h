@@ -14,7 +14,7 @@
 #define PRODUCER_PRODUCTS 40
 class Producer {
 public:
-    Producer(size_t id,WaitQueue* queue):m_id(id),m_queue(queue){ pthread_mutex_init(&rand_mutex, NULL);}
+    Producer(size_t id,WaitQueue<int>* queue):m_id(id),m_queue(queue){ pthread_mutex_init(&rand_mutex, NULL);}
     ~Producer(){ pthread_mutex_destroy(&rand_mutex);}
     void startProducing();
     void stopProducing();
@@ -24,7 +24,7 @@ private:
     size_t m_id;
     pthread_t thread;
     pthread_mutex_t rand_mutex;
-    WaitQueue* m_queue;
+    WaitQueue<int>* m_queue;
 
 };
 inline void Producer::startProducing() {

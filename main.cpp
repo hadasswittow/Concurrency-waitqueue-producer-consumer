@@ -8,7 +8,7 @@
 #define PRODUCERS_AMOUNT 3
 #define CONSUMERS_AMOUNT 4
 
-void createProducersAndConsumers(Producer *producers[], Consumer *consumers[], WaitQueue &waitQueue);
+void createProducersAndConsumers(Producer *producers[], Consumer *consumers[], WaitQueue<int> &waitQueue);
 
 void joinProducersAndConsumers(Producer *producers[], Consumer *consumers[]);
 
@@ -27,7 +27,7 @@ void testWaitQueue() {
     
     Producer *producers[PRODUCERS_AMOUNT];
     Consumer *consumers[CONSUMERS_AMOUNT];
-    WaitQueue waitQueue(QUEUE_SIZE);
+    WaitQueue<int> waitQueue(QUEUE_SIZE);
 
     createProducersAndConsumers(producers, consumers, waitQueue);
     joinProducersAndConsumers(producers, consumers);
@@ -35,7 +35,7 @@ void testWaitQueue() {
 
 }
 
-void createProducersAndConsumers(Producer *producers[], Consumer *consumers[], WaitQueue &waitQueue) {
+void createProducersAndConsumers(Producer *producers[], Consumer *consumers[], WaitQueue<int> &waitQueue) {
     int i;
     for (i = 0; i < PRODUCERS_AMOUNT; ++i) {
         producers[i] = new Producer(i, &waitQueue);

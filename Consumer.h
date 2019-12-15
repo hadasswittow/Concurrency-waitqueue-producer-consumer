@@ -14,7 +14,7 @@
 
 class Consumer {
 public:
-    Consumer(size_t id,WaitQueue* queue):m_id(id),m_queue(queue){};
+    Consumer(size_t id,WaitQueue<int>* queue):m_id(id),m_queue(queue){};
     void startConsuming();
     void stopConsuming();
 
@@ -22,7 +22,7 @@ private:
     static void* consume(void* param);
     size_t m_id;
     pthread_t thread;
-    WaitQueue *m_queue;
+    WaitQueue<int> *m_queue;
 
 };
 inline void Consumer::startConsuming() {

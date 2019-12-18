@@ -16,8 +16,10 @@ public:
     WaitQueue(size_t size);
     ~WaitQueue();
     size_t size(){ return m_size;}
-    void pushItem(T item);
-    T popItem();
+    bool tryPush(T item );
+    T front();
+
+    bool tryPop();
 private:
     size_t m_size;
     queue<T> waiting_queue;
@@ -38,24 +40,32 @@ inline WaitQueue<T>::~WaitQueue() {
     sem_destroy(&sem_empty);
     sem_destroy(&sem_full);
 }
+
 template<typename T>
-inline void WaitQueue<T>::pushItem(T item){
-    sem_wait(&sem_empty);
+inline bool WaitQueue<T>::tryPush(T item){
+
+    if (sem_trywait(&sem_empty))
+       return false;
     pthread_mutex_lock(&mutex);
     waiting_queue.push(item);
     pthread_mutex_unlock(&mutex);
     sem_post(&sem_full);
+    return true;
 }
 template<typename T>
-inline T WaitQueue<T>::popItem() {
-    T item;
-    sem_wait(&sem_full);
+inline T WaitQueue<T>::front(){
+    return waiting_queue.front();
+}
+
+template<typename T>
+inline bool WaitQueue<T>::tryPop(){
+    if (sem_trywait(&sem_full))
+        return false;
     pthread_mutex_lock(&mutex);
-    item = waiting_queue.front();
     waiting_queue.pop();
     pthread_mutex_unlock(&mutex);
     sem_post(&sem_empty);
-    return item;
+    return true;
 }
 
 #endif //PRODUCERCONSUMERCPP_WAITQUEUE_H

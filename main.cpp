@@ -30,6 +30,8 @@ void testWaitQueue() {
     WaitQueue<int> waitQueue(QUEUE_SIZE);
 
     createProducersAndConsumers(producers, consumers, waitQueue);
+
+    sleep(4);
     joinProducersAndConsumers(producers, consumers);
 
 

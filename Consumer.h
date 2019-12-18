@@ -14,7 +14,7 @@
 
 class Consumer {
 public:
-    Consumer(size_t id,WaitQueue<int>* queue):m_id(id),m_queue(queue){};
+    Consumer(size_t id,WaitQueue<int>* queue):m_id(id),m_queue(queue),m_counter(0){};
     void startConsuming();
     void stopConsuming();
 
@@ -22,6 +22,7 @@ private:
     static void* consume(void* param);
     size_t m_id;
     pthread_t thread;
+    unsigned int m_counter;
     WaitQueue<int> *m_queue;
 
 };
@@ -30,16 +31,22 @@ inline void Consumer::startConsuming() {
 }
 inline void Consumer::stopConsuming(){
     void* ret_val;
+    m_counter = CONSUMER_PRODUCTS;
     pthread_join(thread, &ret_val);
 }
 inline void* Consumer::consume(void* param){
     Consumer* _this = (Consumer*)param;
-    unsigned int counter = 0;
+    _this->m_counter = 0;
     int val;
-    while(counter < CONSUMER_PRODUCTS){
-        val = _this->m_queue->popItem();
-        printf("Consumer: %lu, iteration %d bought product number %d\n" ,_this->m_id,counter ,val);
-        ++counter;
+    while(_this->m_counter < CONSUMER_PRODUCTS){
+        val = _this->m_queue->front();
+        if(_this->m_queue->tryPop())
+        {
+            printf("Consumer: %lu, iteration %d bought product number %d\n" ,_this->m_id,_this->m_counter ,val);
+            ++_this->m_counter;
+        }
+        else
+            sleep(0);
     }
 }
 
